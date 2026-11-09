@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-petal-50: #fff7f8;
+  --color-petal-100: #fdecef;
+  --color-petal-200: #f9d5dc;
+  --color-petal-300: #f3b7c3;
+  --color-petal-400: #e993a7;
+  --color-petal-500: #d56f88;
+  --color-petal-600: #b9506b;
+  --color-petal-700: #93384f;
+  --color-ink: #4a2a33;
+}
+
+@theme inline {
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-playfair);
+}
+
+html {
+  color-scheme: light;
+}
