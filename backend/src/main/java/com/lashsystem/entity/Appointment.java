@@ -3,6 +3,7 @@ package com.lashsystem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -23,6 +24,9 @@ public class Appointment {
 
     @Column(name = "service_id", nullable = false)
     private UUID serviceId;
+
+    @Column(name = "price_at_booking", nullable = false)
+    private BigDecimal priceAtBooking;
 
     @Column(name = "start_time", nullable = false)
     private Instant startTime;

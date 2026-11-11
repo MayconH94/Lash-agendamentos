@@ -18,6 +18,18 @@ public class SalonService {
     @Column(nullable = false)
     private String name;
 
+    @Column(length = 500)
+    private String description;
+
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
+    @Column(name = "category_id")
+    private UUID categoryId;
+
+    @Column(name = "display_order", nullable = false)
+    private int displayOrder;
+
     @Column(name = "duration_minutes", nullable = false)
     private int durationMinutes;
 

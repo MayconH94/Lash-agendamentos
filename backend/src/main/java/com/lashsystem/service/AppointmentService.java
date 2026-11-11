@@ -40,6 +40,7 @@ public class AppointmentService {
                 .clientName(clientName)
                 .clientPhone(clientPhone)
                 .serviceId(serviceId)
+                .priceAtBooking(salonService.getPrice())   // <- nova linha
                 .startTime(startTime)
                 .endTime(endTime)
                 .status("CONFIRMED")

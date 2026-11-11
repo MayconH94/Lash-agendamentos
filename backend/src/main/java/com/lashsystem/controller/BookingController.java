@@ -2,9 +2,9 @@ package com.lashsystem.controller;
 
 import com.lashsystem.dto.AppointmentResponse;
 import com.lashsystem.dto.BookingRequest;
-import com.lashsystem.entity.SalonService;
-import com.lashsystem.repository.SalonServiceRepository;
+import com.lashsystem.dto.ServiceResponse;
 import com.lashsystem.service.AppointmentService;
+import com.lashsystem.service.ServiceCatalogService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,11 +18,11 @@ import java.util.List;
 public class BookingController {
 
     private final AppointmentService appointmentService;
-    private final SalonServiceRepository serviceRepository;
+    private final ServiceCatalogService catalogService;
 
     @GetMapping("/services")
-    public List<SalonService> listServices() {
-        return serviceRepository.findByActiveTrue();
+    public List<ServiceResponse> listServices() {
+        return catalogService.listActive();
     }
 
     @PostMapping("/appointments")

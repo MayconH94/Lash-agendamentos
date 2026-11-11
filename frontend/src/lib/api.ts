@@ -1,9 +1,13 @@
 export type Service = {
   id: string;
   name: string;
+  description: string | null;
+  imageUrl: string | null;
   durationMinutes: number;
   bufferMinutes: number;
   price: number;
+  categoryId: string | null;
+  categoryName: string;
 };
 
 export type Slot = {
