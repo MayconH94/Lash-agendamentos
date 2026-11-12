@@ -2,6 +2,7 @@
 
 import { Check, Clock, Sparkles } from "lucide-react";
 import type { Service } from "@/lib/api";
+import { formatDuration } from "@/lib/duration";
 
 type Props = {
   services: Service[];
@@ -38,7 +39,7 @@ export default function ServiceSelector({ services, selectedId, onSelect }: Prop
               <span className="min-w-0 flex-1">
                 <span className="block font-semibold">{s.name}</span>
                 <span className="mt-0.5 flex items-center gap-1 text-xs text-ink/60">
-                  <Clock size={12} /> {s.durationMinutes} min
+                  <Clock size={12} /> {formatDuration(s.durationMinutes)}
                 </span>
               </span>
 

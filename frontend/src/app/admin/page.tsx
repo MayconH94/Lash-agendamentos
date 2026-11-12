@@ -1,4 +1,5 @@
-﻿import { cookies } from "next/headers";
+﻿import Link from "next/link";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { BACKEND_URL, TOKEN_COOKIE } from "@/lib/backend";
 import { LogoutButton } from "@/components/LogoutButton";
@@ -22,8 +23,26 @@ export default async function AdminHomePage() {
         <LogoutButton />
       </div>
       <p className="mt-4 text-ink/70">
-        Olá, <strong>{me.email}</strong>. Em breve: serviços, horários e agenda.
+        Olá, <strong>{me.email}</strong>.
       </p>
+
+      <nav className="mt-6 space-y-3">
+        <Link
+          href="/admin/servicos"
+          className="block rounded-2xl bg-white p-4 font-semibold text-ink shadow-sm hover:bg-petal-100"
+        >
+          Serviços
+          <span className="block text-sm font-normal text-ink/60">Criar, editar e ocultar serviços</span>
+        </Link>
+        <div className="rounded-2xl bg-white/60 p-4 text-ink/40">
+          Horários de trabalho
+          <span className="block text-sm">Em breve</span>
+        </div>
+        <div className="rounded-2xl bg-white/60 p-4 text-ink/40">
+          Agenda
+          <span className="block text-sm">Em breve</span>
+        </div>
+      </nav>
     </main>
   );
 }
