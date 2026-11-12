@@ -1,7 +1,8 @@
 ﻿"use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { adminApi, type AdminService, type Category } from "@/lib/adminApi";
+import { prepareImage } from "@/lib/image";
 
 type Props = {
   service: AdminService | null;
@@ -29,6 +30,24 @@ export function ServiceForm({ service, categories, onClose, onSaved }: Props) {
 
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  async function handlePhoto(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setError(null);
+    setUploading(true);
+    try {
+      const blob = await prepareImage(file);
+      const { url } = await adminApi.uploadImage(blob);
+      setImageUrl(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Não foi possível enviar a foto.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   const allCategories = [
     ...categories,
@@ -135,8 +154,24 @@ export function ServiceForm({ service, categories, onClose, onSaved }: Props) {
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium text-ink">Link da foto (opcional)</span>
-          <input className={inputClass} type="url" placeholder="https://..." value={imageUrl} maxLength={500} onChange={(e) => setImageUrl(e.target.value)} />
+          <span className="text-sm font-medium text-ink">Foto (opcional)</span>
+          {imageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={imageUrl} alt="Pré-visualização" className="mt-2 h-32 w-32 rounded-2xl object-cover" />
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handlePhoto}
+            disabled={uploading}
+            className="mt-2 block w-full text-sm text-ink file:mr-3 file:rounded-full file:border-0 file:bg-petal-600 file:px-4 file:py-2 file:font-semibold file:text-white"
+          />
+          {uploading && <span className="mt-1 block text-xs text-ink/50">Enviando foto...</span>}
+          {imageUrl && !uploading && (
+            <button type="button" onClick={() => setImageUrl("")} className="mt-1 text-sm font-semibold text-petal-600">
+              Remover foto
+            </button>
+          )}
         </label>
 
         <div className="grid grid-cols-2 gap-3">
@@ -166,7 +201,7 @@ export function ServiceForm({ service, categories, onClose, onSaved }: Props) {
           <button type="button" onClick={onClose} className="flex-1 rounded-full border border-petal-600 py-3 font-semibold text-petal-600">
             Cancelar
           </button>
-          <button type="submit" disabled={saving} className="flex-1 rounded-full bg-petal-600 py-3 font-semibold text-white disabled:opacity-60">
+          <button type="submit" disabled={saving || uploading} className="flex-1 rounded-full bg-petal-600 py-3 font-semibold text-white disabled:opacity-60">
             {saving ? "Salvando..." : "Salvar"}
           </button>
         </div>

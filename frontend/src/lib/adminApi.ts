@@ -46,7 +46,24 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json();
 }
 
+async function uploadImage(blob: Blob): Promise<{ url: string }> {
+  const form = new FormData();
+  form.append("file", blob, "foto.jpg");
+  const res = await fetch("/admin-api/upload", { method: "POST", body: form });
+
+  if (res.status === 401) {
+    window.location.href = "/admin/login";
+    throw new Error("Sessão expirada");
+  }
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.detail ?? data?.message ?? "Não foi possível enviar a foto.");
+  }
+  return res.json();
+}
+
 export const adminApi = {
+  uploadImage,
   createService: (body: ServicePayload) =>
     call<AdminService>("services", { method: "POST", body: JSON.stringify(body) }),
   updateService: (id: string, body: ServicePayload) =>
