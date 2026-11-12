@@ -1,7 +1,7 @@
-﻿import Link from "next/link";
-import { cookies } from "next/headers";
+﻿import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { BACKEND_URL, TOKEN_COOKIE } from "@/lib/backend";
+import { AdminShell } from "@/components/AdminShell";
 import { ServicesManager } from "@/components/ServicesManager";
 import type { AdminService, Category } from "@/lib/adminApi";
 
@@ -25,11 +25,8 @@ export default async function AdminServicesPage() {
   ]);
 
   return (
-    <main className="mx-auto min-h-screen max-w-md bg-petal-50 px-6 py-8">
-      <Link href="/admin" className="mb-4 inline-block text-sm font-semibold text-petal-600">
-        ← Painel
-      </Link>
+    <AdminShell>
       <ServicesManager services={services} categories={categories} />
-    </main>
+    </AdminShell>
   );
 }

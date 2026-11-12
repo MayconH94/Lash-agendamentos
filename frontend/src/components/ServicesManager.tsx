@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Clock, Plus, Sparkles } from "lucide-react";
 import { adminApi, type AdminService, type Category } from "@/lib/adminApi";
-import { ServiceForm } from "@/components/ServiceForm";
 import { formatDuration } from "@/lib/duration";
+import { ServiceForm } from "@/components/ServiceForm";
 
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -39,7 +39,7 @@ export function ServicesManager({
   return (
     <>
       <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-semibold text-ink">Serviços</h1>
+        <h1 className="font-serif text-2xl font-semibold text-ink lg:text-3xl">Serviços</h1>
         <button
           onClick={() => setEditing("new")}
           className="flex items-center gap-1 rounded-full bg-petal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-petal-700"
@@ -59,14 +59,14 @@ export function ServicesManager({
       {Array.from(groups.entries()).map(([category, items]) => (
         <section key={category} className="mt-6">
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-petal-600">{category}</h2>
-          <ul className="space-y-3">
+          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {items.map((s) => (
               <li
                 key={s.id}
-                className={`rounded-2xl bg-white p-3 shadow-sm ${s.active ? "" : "opacity-60"}`}
+                className={`flex flex-col rounded-2xl bg-white p-3 shadow-sm ${s.active ? "" : "opacity-60"}`}
               >
-                <div className="flex gap-3">
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-petal-100 text-petal-600">
+                <div className="flex flex-1 gap-3">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-petal-100 text-petal-600 lg:h-20 lg:w-20">
                     {s.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={s.imageUrl} alt={s.name} className="h-full w-full object-cover" />
@@ -95,13 +95,13 @@ export function ServicesManager({
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() => setEditing(s)}
-                    className="flex-1 rounded-full border border-petal-600 py-2 text-sm font-semibold text-petal-600"
+                    className="flex-1 rounded-full border border-petal-600 py-2 text-sm font-semibold text-petal-600 hover:bg-petal-50"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => toggleActive(s)}
-                    className="flex-1 rounded-full bg-petal-100 py-2 text-sm font-semibold text-petal-700"
+                    className="flex-1 rounded-full bg-petal-100 py-2 text-sm font-semibold text-petal-700 hover:bg-petal-200"
                   >
                     {s.active ? "Ocultar" : "Reativar"}
                   </button>

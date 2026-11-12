@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { adminApi, type AdminService, type Category } from "@/lib/adminApi";
@@ -102,11 +102,11 @@ export function ServiceForm({ service, categories, onClose, onSaved }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end bg-black/40 md:items-center md:justify-center md:p-6" onClick={onClose}>
       <form
         onSubmit={handleSubmit}
         onClick={(e) => e.stopPropagation()}
-        className="mx-auto max-h-[92vh] w-full max-w-md space-y-4 overflow-y-auto rounded-t-3xl bg-petal-50 p-6"
+        className="mx-auto max-h-[92dvh] w-full max-w-md space-y-4 overflow-y-auto rounded-t-3xl bg-petal-50 p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:max-w-lg md:rounded-3xl"
       >
         <h2 className="font-serif text-xl font-semibold text-ink">
           {service ? "Editar serviço" : "Novo serviço"}
