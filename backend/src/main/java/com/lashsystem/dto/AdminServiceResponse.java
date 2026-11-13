@@ -14,5 +14,6 @@ public record AdminServiceResponse(
         int durationMinutes,
         int bufferMinutes,
         BigDecimal price,
+        Integer maintenanceDays,
         boolean active
 ) {}

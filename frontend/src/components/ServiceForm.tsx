@@ -3,6 +3,9 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { adminApi, type AdminService, type Category } from "@/lib/adminApi";
 import { prepareImage } from "@/lib/image";
+import { BUFFER_OPTIONS, DURATION_OPTIONS, formatDuration, withCurrent } from "@/lib/duration";
+
+const MAINTENANCE_OPTIONS = [7, 10, 14, 15, 20, 21, 25, 28, 30, 45, 60, 90];
 
 type Props = {
   service: AdminService | null;
@@ -22,6 +25,7 @@ export function ServiceForm({ service, categories, onClose, onSaved }: Props) {
   const [duration, setDuration] = useState(String(service?.durationMinutes ?? 60));
   const [buffer, setBuffer] = useState(String(service?.bufferMinutes ?? 15));
   const [price, setPrice] = useState(service ? String(service.price).replace(".", ",") : "");
+  const [maintenance, setMaintenance] = useState(service?.maintenanceDays ? String(service.maintenanceDays) : "");
   const [order, setOrder] = useState(String(service?.displayOrder ?? 0));
 
   const [extraCategories, setExtraCategories] = useState<Category[]>([]);
@@ -82,6 +86,7 @@ export function ServiceForm({ service, categories, onClose, onSaved }: Props) {
       durationMinutes: Number(duration),
       bufferMinutes: Number(buffer),
       price: Number(price.replace(",", ".")),
+      maintenanceDays: maintenance ? Number(maintenance) : null,
     };
 
     if (!body.name) return setError("Informe o nome do serviço.");
@@ -176,12 +181,20 @@ export function ServiceForm({ service, categories, onClose, onSaved }: Props) {
 
         <div className="grid grid-cols-2 gap-3">
           <label className="block">
-            <span className="text-sm font-medium text-ink">Duração (min)</span>
-            <input className={inputClass} inputMode="numeric" value={duration} onChange={(e) => setDuration(e.target.value)} />
+            <span className="text-sm font-medium text-ink">Duração</span>
+            <select className={inputClass} value={duration} onChange={(e) => setDuration(e.target.value)}>
+              {withCurrent(DURATION_OPTIONS, Number(duration)).map((m) => (
+                <option key={m} value={m}>{formatDuration(m)}</option>
+              ))}
+            </select>
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-ink">Intervalo (min)</span>
-            <input className={inputClass} inputMode="numeric" value={buffer} onChange={(e) => setBuffer(e.target.value)} />
+            <span className="text-sm font-medium text-ink">Intervalo depois</span>
+            <select className={inputClass} value={buffer} onChange={(e) => setBuffer(e.target.value)}>
+              {withCurrent(BUFFER_OPTIONS, Number(buffer)).map((m) => (
+                <option key={m} value={m}>{m === 0 ? "Sem intervalo" : `${m} min`}</option>
+              ))}
+            </select>
           </label>
           <label className="block">
             <span className="text-sm font-medium text-ink">Preço (R$)</span>
@@ -192,6 +205,17 @@ export function ServiceForm({ service, categories, onClose, onSaved }: Props) {
             <input className={inputClass} inputMode="numeric" value={order} onChange={(e) => setOrder(e.target.value)} />
           </label>
         </div>
+
+        <label className="block">
+          <span className="text-sm font-medium text-ink">Lembrar a cliente de voltar</span>
+          <select className={inputClass} value={maintenance} onChange={(e) => setMaintenance(e.target.value)}>
+            <option value="">Não lembrar</option>
+            {withCurrent(MAINTENANCE_OPTIONS, Number(maintenance) || 0).filter((d) => d > 0).map((d) => (
+              <option key={d} value={d}>Após {d} dias (manutenção)</option>
+            ))}
+          </select>
+          <span className="mt-1 block text-xs text-ink/50">Aparece na tela &quot;Retornos&quot; quando o prazo chegar.</span>
+        </label>
 
         {error && (
           <p role="alert" className="rounded-xl bg-petal-100 px-3 py-2 text-sm text-petal-700">{error}</p>

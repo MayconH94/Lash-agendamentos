@@ -30,6 +30,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findActiveBetween(@Param("dayStart") Instant dayStart,
                                         @Param("dayEnd") Instant dayEnd);
 
+    // Agendamentos ativos desde uma data (passados e futuros), para a lista de retornos
+    @Query("""
+        SELECT a FROM Appointment a
+        WHERE a.status <> 'CANCELLED' AND a.startTime > :since
+        ORDER BY a.startTime
+    """)
+    List<Appointment> findActiveSince(@Param("since") Instant since);
+
     // Agenda da profissional: todos os agendamentos do dia (inclusive cancelados)
     @Query("""
         SELECT a FROM Appointment a

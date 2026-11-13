@@ -39,6 +39,9 @@ public class SalonService {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @Column(name = "maintenance_days")
+    private Integer maintenanceDays;
+
     @Column(nullable = false)
     private boolean active;
 }

@@ -15,6 +15,7 @@ export type AdminService = {
   durationMinutes: number;
   bufferMinutes: number;
   price: number;
+  maintenanceDays: number | null;
   active: boolean;
 };
 
@@ -27,6 +28,7 @@ export type ServicePayload = {
   durationMinutes: number;
   bufferMinutes: number;
   price: number;
+  maintenanceDays: number | null;
 };
 
 export type WorkingInterval = { start: string; end: string };
@@ -39,6 +41,16 @@ export type TimeOffPayload = {
   start: string | null;
   end: string | null;
   reason: string | null;
+};
+
+export type ReturnItem = {
+  clientName: string;
+  clientPhone: string;
+  serviceId: string;
+  serviceName: string;
+  lastVisit: string;
+  dueDate: string;
+  daysOverdue: number;
 };
 
 export type Settings = { whatsapp: string | null };

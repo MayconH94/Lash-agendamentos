@@ -124,6 +124,7 @@ public class AdminCatalogService {
         s.setDurationMinutes(r.durationMinutes());
         s.setBufferMinutes(r.bufferMinutes());
         s.setPrice(r.price());
+        s.setMaintenanceDays(r.maintenanceDays());
     }
 
     private static String blankToNull(String value) {
@@ -146,7 +147,7 @@ public class AdminCatalogService {
                 s.getId(), s.getName(), s.getDescription(), s.getImageUrl(),
                 s.getCategoryId(), c == null ? null : c.getName(),
                 s.getDisplayOrder(), s.getDurationMinutes(), s.getBufferMinutes(),
-                s.getPrice(), s.isActive());
+                s.getPrice(), s.getMaintenanceDays(), s.isActive());
     }
 
     private CategoryResponse toResponse(ServiceCategory c) {

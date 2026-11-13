@@ -12,5 +12,6 @@ public record ServiceRequest(
         @Min(0) Integer displayOrder,
         @NotNull @Min(5) Integer durationMinutes,
         @NotNull @Min(0) Integer bufferMinutes,
-        @NotNull @DecimalMin("0.00") BigDecimal price
+        @NotNull @DecimalMin("0.00") BigDecimal price,
+        @Min(1) @Max(365) Integer maintenanceDays
 ) {}

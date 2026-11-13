@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { adminApi, type AdminAppointment } from "@/lib/adminApi";
 import { formatDateBR, toISO, todayISO } from "@/lib/dates";
@@ -28,39 +28,49 @@ function formatPhone(p: string) {
   return d.length === 11 ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}` : p;
 }
 
+const noSubscription = () => () => {};
+
 export function AgendaView() {
-  const [date, setDate] = useState("");
-  const [items, setItems] = useState<AdminAppointment[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  // No servidor devolve "" (sem data); no navegador devolve o dia de hoje
+  const today = useSyncExternalStore(noSubscription, todayISO, () => "");
+  const [picked, setPicked] = useState<string | null>(null);
+  const date = picked ?? today;
+  const setDate = setPicked;
+
+  // Resultado guardado junto com o dia a que pertence (trocar de dia = "carregando")
+  const [result, setResult] = useState<{ date: string; items?: AdminAppointment[]; error?: string } | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
-  const load = useCallback(async (d: string) => {
-    setError(null);
-    try {
-      setItems(await adminApi.listAppointments(d));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Erro ao carregar a agenda.");
-    }
-  }, []);
-
-  useEffect(() => {
-    setDate(todayISO()); // só no navegador, evita diferença de fuso na hidratação
-  }, []);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!date) return;
-    setItems(null);
-    void load(date);
-  }, [date, load]);
+    let ignore = false;
+    adminApi
+      .listAppointments(date)
+      .then((items) => !ignore && setResult({ date, items }))
+      .catch((e) =>
+        !ignore && setResult({ date, error: e instanceof Error ? e.message : "Erro ao carregar a agenda." })
+      );
+    return () => {
+      ignore = true;
+    };
+  }, [date, reloadKey]);
+
+  const current = result?.date === date ? result : null;
+  const items = current?.items ?? null;
+  const error = current?.error ?? actionError;
 
   async function cancel(a: AdminAppointment) {
     if (!window.confirm(`Cancelar o horário de ${a.clientName} às ${time(a.startTime)}?`)) return;
     setBusyId(a.id);
+    setActionError(null);
     try {
       await adminApi.cancelAppointment(a.id);
-      await load(date);
+      setReloadKey((k) => k + 1);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Não foi possível cancelar.");
+      setActionError(e instanceof Error ? e.message : "Não foi possível cancelar.");
     } finally {
       setBusyId(null);
     }
@@ -101,7 +111,7 @@ export function AgendaView() {
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
-          onClick={() => setDate(todayISO())}
+          onClick={() => setPicked(null)}
           className="rounded-full bg-petal-100 px-4 py-2 text-sm font-semibold text-petal-700 hover:bg-petal-200"
         >
           Hoje
