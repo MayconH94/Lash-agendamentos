@@ -37,7 +37,7 @@ export default function TimeSlotGrid({
       )}
 
       {ready && (
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-3 gap-2 min-[360px]:grid-cols-4">
           {slots.map((slot) => {
             const selected = slot.startTime === selectedStart;
             return (

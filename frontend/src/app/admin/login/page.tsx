@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center bg-gradient-to-b from-petal-300 to-petal-100 px-6">
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center bg-gradient-to-b from-petal-300 to-petal-100 px-6">
       <div className="mb-8 flex justify-center">
         <Logo />
       </div>

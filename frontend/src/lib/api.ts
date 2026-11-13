@@ -69,3 +69,9 @@ export async function bookAppointment(data: {
     })
   );
 }
+
+export type PublicSettings = { whatsapp: string | null };
+
+export async function getPublicSettings(): Promise<PublicSettings> {
+  return handle(await fetch("/api/settings"));
+}

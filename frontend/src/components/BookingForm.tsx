@@ -71,7 +71,7 @@ export default function BookingForm({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40">
-      <div className="w-full max-w-md rounded-t-3xl bg-white p-6 shadow-2xl">
+      <div className="max-h-[92dvh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl">
         <div className="mb-4 flex items-start justify-between">
           <div>
             <h2 className="text-lg font-bold">Seus dados</h2>

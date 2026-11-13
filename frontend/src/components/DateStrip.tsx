@@ -67,7 +67,7 @@ export default function DateStrip({ value, onChange }: Props) {
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1.5">
+      <div className="grid grid-cols-7 gap-1 min-[380px]:gap-1.5">
         {days.map((d) => {
           const iso = toISO(d);
           const selected = iso === value;

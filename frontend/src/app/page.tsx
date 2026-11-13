@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, MessageCircle } from "lucide-react";
 import Header from "@/components/Header";
 import DateStrip from "@/components/DateStrip";
 import ServiceSelector from "@/components/ServiceSelector";
 import TimeSlotGrid from "@/components/TimeSlotGrid";
 import BookingForm from "@/components/BookingForm";
 import {
+  getPublicSettings,
   getServices,
   getSlots,
   type Appointment,
@@ -15,6 +16,7 @@ import {
   type Slot,
 } from "@/lib/api";
 import { formatDateBR } from "@/lib/dates";
+import { whatsappLink } from "@/lib/whatsapp";
 
 type SlotsState = { key: string; slots: Slot[]; error: string | null };
 
@@ -31,6 +33,17 @@ export default function Home() {
   const [confirmed, setConfirmed] = useState<Appointment | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
+
+  // WhatsApp da profissional (cadastrado no painel). Sem número, os links não aparecem.
+  const [whatsapp, setWhatsapp] = useState<string | null>(null);
+
+  useEffect(() => {
+    getPublicSettings()
+      .then((s) => setWhatsapp(s.whatsapp))
+      .catch(() => {
+        // sem o número, a página funciona normalmente, só sem o link
+      });
+  }, []);
 
   useEffect(() => {
     getServices()
@@ -108,16 +121,17 @@ export default function Home() {
 
   // Tela de sucesso
   if (confirmed && selected && selectedSlot) {
+    const firstName = confirmed.clientName.split(" ")[0];
+    const contactMessage = `Olá! Aqui é ${firstName}. Tenho um agendamento de ${selected.name} em ${formatDateBR(date)} às ${selectedSlot.label} e preciso cancelar ou remarcar.`;
+
     return (
-      <div className="mx-auto flex min-h-screen max-w-md flex-col bg-petal-50 shadow-2xl shadow-petal-400/30">
+      <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-petal-50 shadow-2xl shadow-petal-400/30">
         <Header />
         <main className="relative z-10 -mt-12 flex-1 px-5 pb-8">
           <div className="rounded-3xl bg-white p-8 text-center shadow-lg shadow-petal-300/40">
             <CheckCircle2 size={56} className="mx-auto text-petal-600" />
             <h2 className="mt-4 text-xl font-bold">Agendamento confirmado!</h2>
-            <p className="mt-1 text-sm text-ink/60">
-              Te esperamos, {confirmed.clientName.split(" ")[0]}.
-            </p>
+            <p className="mt-1 text-sm text-ink/60">Te esperamos, {firstName}.</p>
 
             <div className="mt-6 space-y-1 rounded-2xl bg-petal-100 p-4 text-sm">
               <p className="font-semibold">{selected.name}</p>
@@ -125,6 +139,22 @@ export default function Home() {
                 {formatDateBR(date)} às {selectedSlot.label}
               </p>
             </div>
+
+            {whatsapp && (
+              <div className="mt-5 rounded-2xl border border-petal-200 p-4 text-sm">
+                <p className="text-ink/70">
+                  Precisa cancelar ou remarcar? Fale direto com a profissional.
+                </p>
+                <a
+                  href={whatsappLink(whatsapp, contactMessage)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-petal-600 py-3 font-semibold text-petal-600 hover:bg-petal-50"
+                >
+                  <MessageCircle size={18} /> Falar com a profissional
+                </a>
+              </div>
+            )}
 
             <button
               type="button"
@@ -140,7 +170,7 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col bg-petal-50 shadow-2xl shadow-petal-400/30">
+    <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-petal-50 shadow-2xl shadow-petal-400/30">
       <Header />
 
       <main className="relative z-10 -mt-12 flex-1 space-y-7 px-5 pb-6">
@@ -166,9 +196,23 @@ export default function Home() {
           error={slotsError}
           onSelect={handleSelectSlot}
         />
+
+        {whatsapp && (
+          <p className="text-center text-xs text-ink/60">
+            Precisa cancelar ou remarcar um horário?{" "}
+            <a
+              href={whatsappLink(whatsapp, "Olá! Preciso cancelar ou remarcar meu horário.")}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-petal-600 underline"
+            >
+              Fale com a profissional
+            </a>
+          </p>
+        )}
       </main>
 
-      <div className="sticky bottom-0 bg-linear-to-t from-petal-50 via-petal-50/95 to-transparent px-5 pb-6 pt-4">
+      <div className="sticky bottom-0 z-20 bg-linear-to-t from-petal-50 from-70% to-petal-50/0 px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4">
         {canConfirm && selected && selectedSlot && (
           <p className="mb-2 text-center text-xs text-ink/70">
             {selected.name} · {formatDateBR(date)} às {selectedSlot.label}

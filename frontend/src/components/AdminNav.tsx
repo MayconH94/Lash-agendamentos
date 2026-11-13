@@ -18,7 +18,7 @@ const items: Item[] = [
   { href: "/admin", label: "Início", icon: LayoutDashboard, exact: true },
   { href: "/admin/servicos", label: "Serviços", icon: ServiceIcon },
   { href: "/admin/horarios", label: "Horários", icon: Clock, soon: true },
-  { href: "/admin/agenda", label: "Agenda", icon: CalendarDays, soon: true },
+  { href: "/admin/agenda", label: "Agenda", icon: CalendarDays },
   { href: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];
 
@@ -26,10 +26,10 @@ export function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] lg:mt-8 lg:flex-col lg:overflow-visible">
+    <nav className="mt-3 flex flex-wrap gap-2 lg:mt-8 lg:flex-col">
       {items.map(({ href, label, icon: Icon, exact, soon }) => {
         const base =
-          "flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold lg:rounded-xl lg:py-3";
+          "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-2 text-sm min-[400px]:gap-2 min-[400px]:px-4 font-semibold lg:rounded-xl lg:py-3";
 
         if (soon) {
           return (

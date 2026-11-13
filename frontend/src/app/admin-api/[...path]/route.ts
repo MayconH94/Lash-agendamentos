@@ -14,7 +14,7 @@ async function forward(
   const { path } = await ctx.params;
   const hasBody = request.method !== "GET" && request.method !== "HEAD";
 
-  const res = await fetch(`${BACKEND_URL}/api/admin/${path.join("/")}`, {
+  const res = await fetch(`${BACKEND_URL}/api/admin/${path.join("/")}${new URL(request.url).search}`, {
     method: request.method,
     headers: {
       Authorization: `Bearer ${token}`,

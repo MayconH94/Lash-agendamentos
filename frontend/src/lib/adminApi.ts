@@ -31,6 +31,18 @@ export type ServicePayload = {
 
 export type Settings = { whatsapp: string | null };
 
+export type AdminAppointment = {
+  id: string;
+  clientName: string;
+  clientPhone: string;
+  serviceId: string;
+  serviceName: string;
+  price: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+};
+
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`/admin-api/${path}`, {
     ...init,
@@ -65,6 +77,10 @@ async function uploadImage(blob: Blob): Promise<{ url: string }> {
 }
 
 export const adminApi = {
+  listAppointments: (date: string) =>
+    call<AdminAppointment[]>(`appointments?date=${date}`),
+  cancelAppointment: (id: string) =>
+    call<AdminAppointment>(`appointments/${id}/cancel`, { method: "PATCH" }),
   uploadImage,
   updateSettings: (whatsapp: string | null) =>
     call<Settings>("settings", { method: "PUT", body: JSON.stringify({ whatsapp }) }),
