@@ -6,6 +6,7 @@ import com.lashsystem.exception.ResourceNotFoundException;
 import com.lashsystem.exception.SlotConflictException;
 import com.lashsystem.repository.AppointmentRepository;
 import com.lashsystem.repository.SalonServiceRepository;
+import com.lashsystem.repository.TimeOffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final SalonServiceRepository serviceRepository;
+    private final TimeOffRepository timeOffRepository;
 
     @Transactional
     public Appointment book(String clientName, String clientPhone, UUID serviceId, Instant startTime) {
@@ -34,6 +36,10 @@ public class AppointmentService {
         // 1ª checagem: rápida, só para dar uma resposta amigável
         if (appointmentRepository.hasOverlap(startTime, endTime)) {
             throw new SlotConflictException("Horário já está ocupado");
+        }
+
+        if (timeOffRepository.hasOverlap(startTime, endTime)) {
+            throw new SlotConflictException("Horário indisponível");
         }
 
         Appointment appointment = Appointment.builder()

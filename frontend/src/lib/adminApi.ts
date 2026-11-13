@@ -32,6 +32,15 @@ export type ServicePayload = {
 export type WorkingInterval = { start: string; end: string };
 export type WorkingDay = { dayOfWeek: number; intervals: WorkingInterval[] };
 
+export type TimeOff = { id: string; startTime: string; endTime: string; reason: string | null };
+export type TimeOffPayload = {
+  date: string;
+  allDay: boolean;
+  start: string | null;
+  end: string | null;
+  reason: string | null;
+};
+
 export type Settings = { whatsapp: string | null };
 
 export type AdminAppointment = {
@@ -80,6 +89,16 @@ async function uploadImage(blob: Blob): Promise<{ url: string }> {
 }
 
 export const adminApi = {
+  createTimeOff: (body: TimeOffPayload) =>
+    call<TimeOff>("time-off", { method: "POST", body: JSON.stringify(body) }),
+  deleteTimeOff: async (id: string) => {
+    const res = await fetch(`/admin-api/time-off/${id}`, { method: "DELETE" });
+    if (res.status === 401) {
+      window.location.href = "/admin/login";
+      throw new Error("Sessão expirada");
+    }
+    if (!res.ok) throw new Error("Não foi possível remover a folga.");
+  },
   saveWorkingHours: (week: WorkingDay[]) =>
     call<WorkingDay[]>("working-hours", { method: "PUT", body: JSON.stringify(week) }),
   listAppointments: (date: string) =>

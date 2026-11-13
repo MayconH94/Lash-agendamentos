@@ -25,7 +25,7 @@ async function forward(
   });
 
   const text = await res.text();
-  return new NextResponse(text, {
+  return new NextResponse(res.status === 204 ? null : text, {
     status: res.status,
     headers: { "Content-Type": res.headers.get("Content-Type") ?? "application/json" },
   });

@@ -37,6 +37,13 @@ export default async function AdminHomePage() {
           <span className="mt-1 block text-sm font-normal text-ink/60">Dias, expediente e intervalo de almoço</span>
         </Link>
         <Link
+          href="/admin/folgas"
+          className="block rounded-2xl bg-white p-5 font-semibold text-ink shadow-sm transition hover:shadow-md"
+        >
+          Folgas e feriados
+          <span className="mt-1 block text-sm font-normal text-ink/60">Fechar um dia ou só algumas horas</span>
+        </Link>
+        <Link
           href="/admin/agenda"
           className="block rounded-2xl bg-white p-5 font-semibold text-ink shadow-sm transition hover:shadow-md"
         >

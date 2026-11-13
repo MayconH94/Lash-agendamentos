@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
-import { CalendarDays, Clock, LayoutDashboard, Settings } from "lucide-react";
+import { CalendarDays, CalendarOff, Clock, LayoutDashboard, Settings } from "lucide-react";
 import { ServiceIcon } from "@/components/ServiceIcon";
 
 type Item = {
@@ -19,6 +19,7 @@ const items: Item[] = [
   { href: "/admin/servicos", label: "Serviços", icon: ServiceIcon },
   { href: "/admin/horarios", label: "Horários", icon: Clock },
   { href: "/admin/agenda", label: "Agenda", icon: CalendarDays },
+  { href: "/admin/folgas", label: "Folgas", icon: CalendarOff },
   { href: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];
 

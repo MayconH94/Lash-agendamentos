@@ -3,10 +3,12 @@ package com.lashsystem.service;
 import com.lashsystem.dto.SlotResponse;
 import com.lashsystem.entity.Appointment;
 import com.lashsystem.entity.SalonService;
+import com.lashsystem.entity.TimeOff;
 import com.lashsystem.entity.WorkingHours;
 import com.lashsystem.exception.ResourceNotFoundException;
 import com.lashsystem.repository.AppointmentRepository;
 import com.lashsystem.repository.SalonServiceRepository;
+import com.lashsystem.repository.TimeOffRepository;
 import com.lashsystem.repository.WorkingHoursRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class SlotEngineService {
     private final AppointmentRepository appointmentRepository;
     private final SalonServiceRepository serviceRepository;
     private final WorkingHoursRepository workingHoursRepository;
+    private final TimeOffRepository timeOffRepository;
 
     public List<SlotResponse> availableSlots(LocalDate date, UUID serviceId) {
         SalonService service = serviceRepository.findById(serviceId)
@@ -51,6 +54,8 @@ public class SlotEngineService {
                 .max(Instant::compareTo).orElseThrow();
         List<Appointment> booked = appointmentRepository.findActiveBetween(dayStart, dayEnd);
 
+        List<TimeOff> timeOffs = timeOffRepository.findOverlapping(dayStart, dayEnd);
+
         Instant now = Instant.now();
         List<SlotResponse> slots = new ArrayList<>();
 
@@ -65,7 +70,9 @@ public class SlotEngineService {
                 if (slotStart.isBefore(now)) continue;
 
                 boolean free = booked.stream().noneMatch(a ->
-                        a.getStartTime().isBefore(slotEnd) && a.getEndTime().isAfter(slotStart));
+                        a.getStartTime().isBefore(slotEnd) && a.getEndTime().isAfter(slotStart))
+                        && timeOffs.stream().noneMatch(t ->
+                        t.getStartTime().isBefore(slotEnd) && t.getEndTime().isAfter(slotStart));
 
                 if (free) {
                     slots.add(new SlotResponse(slotStart,
