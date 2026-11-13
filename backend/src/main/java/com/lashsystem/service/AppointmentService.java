@@ -8,6 +8,7 @@ import com.lashsystem.repository.AppointmentRepository;
 import com.lashsystem.repository.SalonServiceRepository;
 import com.lashsystem.repository.TimeOffRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final SalonServiceRepository serviceRepository;
     private final TimeOffRepository timeOffRepository;
+    private final ApplicationEventPublisher events;
 
     @Transactional
     public Appointment book(String clientName, String clientPhone, UUID serviceId, Instant startTime) {
@@ -55,7 +57,10 @@ public class AppointmentService {
         try {
             // 2ª checagem: a que vale. Se duas requisições passarem pela 1ª ao mesmo
             // tempo, o banco rejeita a segunda aqui.
-            return appointmentRepository.saveAndFlush(appointment);
+            Appointment saved = appointmentRepository.saveAndFlush(appointment);
+            events.publishEvent(new AppointmentBookedEvent(
+                    clientName, clientPhone, salonService.getName(), startTime));
+            return saved;
         } catch (DataIntegrityViolationException ex) {
             throw new SlotConflictException("Outra cliente acabou de reservar este horário");
         }

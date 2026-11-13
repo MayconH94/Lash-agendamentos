@@ -122,6 +122,7 @@ export default function Home() {
   // Tela de sucesso
   if (confirmed && selected && selectedSlot) {
     const firstName = confirmed.clientName.split(" ")[0];
+    const notifyMessage = `Olá! Acabei de agendar pelo site. Meu nome é ${confirmed.clientName}. Serviço: ${selected.name}, em ${formatDateBR(date)} às ${selectedSlot.label}. 💕`;
     const contactMessage = `Olá! Aqui é ${firstName}. Tenho um agendamento de ${selected.name} em ${formatDateBR(date)} às ${selectedSlot.label} e preciso cancelar ou remarcar.`;
 
     return (
@@ -139,6 +140,22 @@ export default function Home() {
                 {formatDateBR(date)} às {selectedSlot.label}
               </p>
             </div>
+
+            {whatsapp && (
+              <div className="mt-5">
+                <a
+                  href={whatsappLink(whatsapp, notifyMessage)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex w-full items-center justify-center gap-2 rounded-full bg-petal-600 py-4 font-semibold text-white shadow-lg shadow-petal-600/30 hover:bg-petal-700"
+                >
+                  <MessageCircle size={18} /> Avisar a profissional no WhatsApp
+                </a>
+                <p className="mt-2 text-xs text-ink/50">
+                  Toque e envie a mensagem para ela já ficar sabendo do seu horário.
+                </p>
+              </div>
+            )}
 
             {whatsapp && (
               <div className="mt-5 rounded-2xl border border-petal-200 p-4 text-sm">
@@ -159,7 +176,7 @@ export default function Home() {
             <button
               type="button"
               onClick={handleReset}
-              className="mt-6 w-full rounded-full bg-petal-600 py-4 font-semibold text-white shadow-lg shadow-petal-600/30 hover:bg-petal-700"
+              className="mt-6 w-full rounded-full border border-petal-600 py-3 font-semibold text-petal-600 hover:bg-petal-50"
             >
               Fazer outro agendamento
             </button>
