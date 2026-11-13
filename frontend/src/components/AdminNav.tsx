@@ -17,7 +17,7 @@ type Item = {
 const items: Item[] = [
   { href: "/admin", label: "Início", icon: LayoutDashboard, exact: true },
   { href: "/admin/servicos", label: "Serviços", icon: ServiceIcon },
-  { href: "/admin/horarios", label: "Horários", icon: Clock, soon: true },
+  { href: "/admin/horarios", label: "Horários", icon: Clock },
   { href: "/admin/agenda", label: "Agenda", icon: CalendarDays },
   { href: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];

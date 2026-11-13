@@ -29,6 +29,9 @@ export type ServicePayload = {
   price: number;
 };
 
+export type WorkingInterval = { start: string; end: string };
+export type WorkingDay = { dayOfWeek: number; intervals: WorkingInterval[] };
+
 export type Settings = { whatsapp: string | null };
 
 export type AdminAppointment = {
@@ -77,6 +80,8 @@ async function uploadImage(blob: Blob): Promise<{ url: string }> {
 }
 
 export const adminApi = {
+  saveWorkingHours: (week: WorkingDay[]) =>
+    call<WorkingDay[]>("working-hours", { method: "PUT", body: JSON.stringify(week) }),
   listAppointments: (date: string) =>
     call<AdminAppointment[]>(`appointments?date=${date}`),
   cancelAppointment: (id: string) =>
