@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
-import { Check, Clock, Sparkles } from "lucide-react";
+import { Check, Clock } from "lucide-react";
+import { ServiceIcon } from "@/components/ServiceIcon";
 import type { Service } from "@/lib/api";
 import { formatDuration } from "@/lib/duration";
 
@@ -73,7 +74,7 @@ export default function ServiceSelector({ services, selectedId, onSelect }: Prop
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={s.imageUrl} alt={s.name} className="h-full w-full object-cover" />
                 ) : (
-                  <Sparkles size={24} />
+                  <ServiceIcon size={36} />
                 )}
               </span>
 

@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Clock, Plus, Sparkles } from "lucide-react";
+import { Clock, Plus } from "lucide-react";
+import { ServiceIcon } from "@/components/ServiceIcon";
 import { adminApi, type AdminService, type Category } from "@/lib/adminApi";
 import { formatDuration } from "@/lib/duration";
 import { ServiceForm } from "@/components/ServiceForm";
@@ -71,7 +72,7 @@ export function ServicesManager({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={s.imageUrl} alt={s.name} className="h-full w-full object-cover" />
                     ) : (
-                      <Sparkles size={24} />
+                      <ServiceIcon size={36} />
                     )}
                   </div>
 

@@ -1,22 +1,25 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, Clock, LayoutDashboard, Sparkles, type LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
+import { CalendarDays, Clock, LayoutDashboard, Settings } from "lucide-react";
+import { ServiceIcon } from "@/components/ServiceIcon";
 
 type Item = {
   href: string;
   label: string;
-  icon: LucideIcon;
+  icon: ComponentType<{ size?: number }>;
   exact?: boolean;
   soon?: boolean;
 };
 
 const items: Item[] = [
   { href: "/admin", label: "Início", icon: LayoutDashboard, exact: true },
-  { href: "/admin/servicos", label: "Serviços", icon: Sparkles },
+  { href: "/admin/servicos", label: "Serviços", icon: ServiceIcon },
   { href: "/admin/horarios", label: "Horários", icon: Clock, soon: true },
   { href: "/admin/agenda", label: "Agenda", icon: CalendarDays, soon: true },
+  { href: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];
 
 export function AdminNav() {

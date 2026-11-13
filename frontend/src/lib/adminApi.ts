@@ -1,4 +1,4 @@
-﻿export type Category = {
+export type Category = {
   id: string;
   name: string;
   displayOrder: number;
@@ -28,6 +28,8 @@ export type ServicePayload = {
   bufferMinutes: number;
   price: number;
 };
+
+export type Settings = { whatsapp: string | null };
 
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`/admin-api/${path}`, {
@@ -64,6 +66,8 @@ async function uploadImage(blob: Blob): Promise<{ url: string }> {
 
 export const adminApi = {
   uploadImage,
+  updateSettings: (whatsapp: string | null) =>
+    call<Settings>("settings", { method: "PUT", body: JSON.stringify({ whatsapp }) }),
   createService: (body: ServicePayload) =>
     call<AdminService>("services", { method: "POST", body: JSON.stringify(body) }),
   updateService: (id: string, body: ServicePayload) =>
